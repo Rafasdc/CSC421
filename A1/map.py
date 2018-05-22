@@ -2,6 +2,7 @@ import numpy as np
 from scipy.spatial import distance
 from random import randint
 from random import shuffle
+from collections import deque
 
 '''
 Generate random location for Cities in a 100x100 grid
@@ -21,8 +22,8 @@ for i in range (26):
 	cities_locations[chr(curr_city)] = (x,y)
 	curr_city += 1
 
-print(cities_locations)
-print(cities_locations['A'])
+#print(cities_locations)
+#print(cities_locations['A'])
 
 '''
 Calculate Euclidean Distances between cities and keep 5 closest
@@ -45,7 +46,7 @@ for city1 in cities_locations:
 	for i in range(len(distances)):
 		cities_distances[city1][distances[i][0]] = distances[i][1]
 	distances = (['city',999], ['city',999], ['city',999], ['city',999], ['city',999])
-print(cities_distances)
+#print(cities_distances)
 
 '''
 Randomly decide between having 1 or 4 paths between cities
@@ -57,7 +58,7 @@ for city in cities_locations:
 	shuffle(keys)
 	for i in range(len(keys)-paths):
 		cities_distances[city].pop(keys[i],None)
-print(cities_distances)
+#print(cities_distances)
 
 
 '''
@@ -68,6 +69,50 @@ for city in cities_locations:
 	for (toCity, dist) in cities_distances[city].items():
 		cities_distances.setdefault(toCity,{})[city] = dist
 print(cities_distances)
+
+
+
+goal = 'B'
+initial_state = 'J'
+
+cur_state = initial_state
+
+#breadth_first_search(cur_state)
+
+
+if cur_state == goal:
+	print("DONE")
+frontier = deque(cur_state)
+explored = set()
+while frontier:
+	done = 0
+	cur_state = frontier.popleft()
+	explored.add(cur_state)
+	for city in cities_distances[cur_state]:
+		if city not in explored and city not in frontier:
+			print(city)
+			if city == goal:
+				print("DONE")
+				done = 1
+			frontier.append(city)
+	if done == 1:
+		break
+
+
+'''
+
+class Node:
+
+	def __init__(self, state, parent=None, action=None, path_cost=0):
+		self.state=state
+		self.parent=parent
+		self.action=action
+		self.path_cost=path_cost
+		self.depth=0
+		if parent:
+			self.depth = parent.depth+1
+'''
+
 '''
 class Map:
 
