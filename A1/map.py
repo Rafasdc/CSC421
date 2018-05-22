@@ -57,7 +57,9 @@ for city in cities_locations:
 	keys = list(cities_distances[city].keys())
 	shuffle(keys)
 	print(keys)
-	for i in range(len(keys)):
+	for i in range(len(keys)-paths):
+		cities_distances[city].pop(keys[i],None)
+print(cities_distances)
 
 
 
