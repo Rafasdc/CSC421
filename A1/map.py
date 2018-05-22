@@ -64,62 +64,65 @@ class Node:
 		#print(action)
 		return Node(action,self,action,problem.path_cost(self.state,action))		
 
-'''
-Generate random location for Cities in a 100x100 grid
-'''
 
-cities_locations = dict()
-curr_city = ord('A')
+def generate_map():
 
-seen=set()
-x, y = randint(0,99), randint(0,99)
-cities_locations[chr(curr_city)] = (x,y)
-for i in range (26):
-	seen.add((x,y))
+	'''
+	Generate random location for Cities in a 100x100 grid
+	'''
+
+	cities_locations = dict()
+	curr_city = ord('A')
+
+	seen=set()
 	x, y = randint(0,99), randint(0,99)
-	while (x,y) in seen:
-		x, y = randint(0,99), randint(0,99)
 	cities_locations[chr(curr_city)] = (x,y)
-	curr_city += 1
+	for i in range (26):
+		seen.add((x,y))
+		x, y = randint(0,99), randint(0,99)
+		while (x,y) in seen:
+			x, y = randint(0,99), randint(0,99)
+		cities_locations[chr(curr_city)] = (x,y)
+		curr_city += 1
 
-#print(cities_locations)
-#print(cities_locations['A'])
+	#print(cities_locations)
+	#print(cities_locations['A'])
 
-'''
-Calculate Euclidean Distances between cities and keep 5 closest
-'''
-distances = (['city',999], ['city',999], ['city',999], ['city',999], ['city',999])
-#print(distance.euclidean(cities_locations['A'], cities_locations['B']))
-cities_distances=dict()
-for city1 in cities_locations:
-	cities_distances[city1] = dict()
-	for city2 in cities_locations:
-			for i in range(len(distances)):
-				euclidean = distance.euclidean(cities_locations[city1],cities_locations[city2])
-				if euclidean == 0:
-					break
-				if euclidean < distances[i][1]:
-					distances[i][0] = city2
-					distances[i][1] = round(euclidean,2)
-					break
-	print(distances)
-	for i in range(len(distances)):
-		cities_distances[city1][distances[i][0]] = distances[i][1]
+	'''
+	Calculate Euclidean Distances between cities and keep 5 closest
+	'''
 	distances = (['city',999], ['city',999], ['city',999], ['city',999], ['city',999])
-#print(cities_distances)
+	#print(distance.euclidean(cities_locations['A'], cities_locations['B']))
+	cities_distances=dict()
+	for city1 in cities_locations:
+		cities_distances[city1] = dict()
+		for city2 in cities_locations:
+				for i in range(len(distances)):
+					euclidean = distance.euclidean(cities_locations[city1],cities_locations[city2])
+					if euclidean == 0:
+						break
+					if euclidean < distances[i][1]:
+						distances[i][0] = city2
+						distances[i][1] = round(euclidean,2)
+						break
+		#print(distances)
+		for i in range(len(distances)):
+			cities_distances[city1][distances[i][0]] = distances[i][1]
+		distances = (['city',999], ['city',999], ['city',999], ['city',999], ['city',999])
+	#print(cities_distances)
 
-'''
-Randomly decide between having 1 or 4 paths between cities
-and randomly choose the paths
-'''
-for city in cities_locations:
-	paths = randint(1,4)
-	keys = list(cities_distances[city].keys())
-	shuffle(keys)
-	for i in range(len(keys)-paths):
-		cities_distances[city].pop(keys[i],None)
-#print(cities_distances)
-
+	'''
+	Randomly decide between having 1 or 4 paths between cities
+	and randomly choose the paths
+	'''
+	for city in cities_locations:
+		paths = randint(1,4)
+		keys = list(cities_distances[city].keys())
+		shuffle(keys)
+		for i in range(len(keys)-paths):
+			cities_distances[city].pop(keys[i],None)
+	#print(cities_distances)
+	return (cities_locations,cities_distances)
 
 '''
 Makes unidrected graph
@@ -130,13 +133,6 @@ for city in cities_locations:
 		cities_distances.setdefault(toCity,{})[city] = dist
 print(cities_distances)
 '''
-
-
-
-goal = 'B'
-initial_state = 'J'
-
-cur_state = initial_state
 
 #breadth_first_search(cur_state)
 
@@ -189,29 +185,37 @@ def depth_first_search(problem):
                         child not in frontier)
 	return None
 
-random_map = Graph(cities_distances)
-print(random_map.cities_distances)
 
-problem = MapProblem('A','P',cities_distances)
 
-result = breadth_first_search(problem)
-print(result)
+for i in range(100):
+	start = randint(65,90)
+	goal = randint(65,90)
 
-node, path_back = result, []
-while node:
-	path_back.append(node.state)
-	node = node.parent
+	cities_locations, cities_distances = generate_map()
 
-print(list(reversed(path_back)))
+	random_map = Graph(cities_distances)
+	#print(random_map.cities_distances)
 
-result_b = depth_first_search(problem)
+	problem = MapProblem(chr(start),chr(goal),cities_distances)
 
-node, path_back = result_b, []
-while node:
-	path_back.append(node.state)
-	node = node.parent
+	result = breadth_first_search(problem)
+	#print(result)
 
-print(list(reversed(path_back)))
+	node, path_back = result, []
+	while node:
+		path_back.append(node.state)
+		node = node.parent
+
+	print(list(reversed(path_back)))
+
+	result_b = depth_first_search(problem)
+
+	node, path_back = result_b, []
+	while node:
+		path_back.append(node.state)
+		node = node.parent
+
+	print(list(reversed(path_back)))
 
 
 
