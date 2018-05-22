@@ -176,6 +176,19 @@ def breadth_first_search(problem):
 				frontier.append(child)
 	return None
 
+def depth_first_search(problem):
+	frontier = [(Node(problem.initial))]  # Stack
+	explored = set()
+	while frontier:
+		node = frontier.pop()
+		if problem.goal_test(node.state):
+			return node
+		explored.add(node.state)
+		frontier.extend(child for child in node.expand(problem)
+                        if child.state not in explored and
+                        child not in frontier)
+	return None
+
 random_map = Graph(cities_distances)
 print(random_map.cities_distances)
 
@@ -185,6 +198,15 @@ result = breadth_first_search(problem)
 print(result)
 
 node, path_back = result, []
+while node:
+	path_back.append(node.state)
+	node = node.parent
+
+print(list(reversed(path_back)))
+
+result_b = depth_first_search(problem)
+
+node, path_back = result_b, []
 while node:
 	path_back.append(node.state)
 	node = node.parent
