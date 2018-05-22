@@ -53,24 +53,30 @@ and randomly choose the paths
 '''
 for city in cities_locations:
 	paths = randint(1,4)
-	print(paths)
 	keys = list(cities_distances[city].keys())
 	shuffle(keys)
-	print(keys)
 	for i in range(len(keys)-paths):
 		cities_distances[city].pop(keys[i],None)
 print(cities_distances)
 
 
-
-
-
-
+'''
+Makes unidrected graph
 '''
 
+for city in cities_locations:
+	for (toCity, dist) in cities_distances[city].items():
+		cities_distances.setdefault(toCity,{})[city] = dist
+print(cities_distances)
+'''
 class Map:
 
 	def __init__ (self, cities=None):
 		self.cities = cities or {}
 
+	def make_undirected(self):
+		for i in list(self.cities.keys()):
+			for (j, dist) in self.cities[a].items():
+				self.
 '''
+
