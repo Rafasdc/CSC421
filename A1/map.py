@@ -7,8 +7,8 @@ from collections import deque
 
 class MapProblem:
 	def __init__(self, initial, goal, cities_distances):
-		self.initial = 'A'
-		self.goal = 'P'
+		self.initial = initial
+		self.goal = goal
 		self.cities_distances=cities_distances
 
 	def goal_test(self, state):
@@ -16,6 +16,18 @@ class MapProblem:
 
 	def path_cost(self,city1,city2):
 		return self.cities_distances[city1][city2]
+
+	def actions(self, state):
+		#The possible actions is go to any city that has a path 
+		#in one hop. 
+		possible_actions = list(cities_distances[state].keys())
+		return possible_actions
+
+		
+	def result(self,state,action):
+		#result of action would be new city based on current state
+		new_state = cities_distances[state][action]
+		return new_state
 
 class Graph:
 
@@ -28,6 +40,29 @@ class Graph:
 			for (toCity, dist) in self.cities_distances[city].items():
 				self.cities_distances.setdefault(toCity,{})[city] = dist
 
+class Node:
+
+	def __init__(self, state, parent=None, action=None, path_cost=0):
+		self.state=state
+		self.parent=parent
+		self.action=action
+		self.path_cost=path_cost
+		self.depth=0
+		if parent:
+			self.depth = parent.depth+1
+
+	def expand(self,problem):
+		#print(self.state)
+		#print(list(problem.cities_distances[self.state].keys()))
+		return [self.child_node(problem,action) for action in problem.actions(self.state)]
+		#keys = list(cities_distances[city].keys())
+		#return keys
+
+	def child_node(self,problem,action):
+		#next_node = problem.cities_distances[self.state]
+		#print(self.state)
+		#print(action)
+		return Node(action,self,action,problem.path_cost(self.state,action))		
 
 '''
 Generate random location for Cities in a 100x100 grid
@@ -89,11 +124,12 @@ for city in cities_locations:
 '''
 Makes unidrected graph
 '''
-
+'''
 for city in cities_locations:
 	for (toCity, dist) in cities_distances[city].items():
 		cities_distances.setdefault(toCity,{})[city] = dist
 print(cities_distances)
+'''
 
 
 
@@ -104,7 +140,7 @@ cur_state = initial_state
 
 #breadth_first_search(cur_state)
 
-
+'''
 if cur_state == goal:
 	print("DONE")
 frontier = deque(cur_state)
@@ -122,8 +158,41 @@ while frontier:
 			frontier.append(city)
 	if done == 1:
 		break
+'''
+
+def breadth_first_search(problem):
+	node = Node(problem.initial)
+	if problem.goal_test(node.state):
+		return node
+	frontier = deque([node])
+	explored = set()
+	while frontier:
+		node = frontier.popleft()
+		explored.add(node.state)
+		for child in node.expand(problem):
+			if child.state not in explored and child not in frontier:
+				if problem.goal_test(child.state):
+					return child
+				frontier.append(child)
+	return None
 
 random_map = Graph(cities_distances)
+print(random_map.cities_distances)
+
+problem = MapProblem('A','P',cities_distances)
+
+result = breadth_first_search(problem)
+print(result)
+
+node, path_back = result, []
+while node:
+	path_back.append(node.state)
+	node = node.parent
+
+print(list(reversed(path_back)))
+
+
+
 
 
 
@@ -145,20 +214,7 @@ class Problem(object):
 # ----- End Problem -------
 
 
-class Node:
 
-	def __init__(self, state, parent=None, action=None, path_cost=0):
-		self.state=state
-		self.parent=parent
-		self.action=action
-		self.path_cost=path_cost
-		self.depth=0
-		if parent:
-			self.depth = parent.depth+1
-
-	def expand(self,problem):
-		keys = list(cities_distances[city].keys())
-		return keys
 
 '''
 
