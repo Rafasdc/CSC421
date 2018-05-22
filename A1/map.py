@@ -126,6 +126,7 @@ def generate_map():
 
 '''
 Makes unidrected graph
+Moved to Graph Class
 '''
 '''
 for city in cities_locations:
@@ -134,27 +135,7 @@ for city in cities_locations:
 print(cities_distances)
 '''
 
-#breadth_first_search(cur_state)
-
-'''
-if cur_state == goal:
-	print("DONE")
-frontier = deque(cur_state)
-explored = set()
-while frontier:
-	done = 0
-	cur_state = frontier.popleft()
-	explored.add(cur_state)
-	for city in cities_distances[cur_state]:
-		if city not in explored and city not in frontier:
-			print(city)
-			if city == goal:
-				print("DONE")
-				done = 1
-			frontier.append(city)
-	if done == 1:
-		break
-'''
+#---------- Uniformed Search ------------
 
 def breadth_first_search(problem):
 	node = Node(problem.initial)
@@ -173,7 +154,7 @@ def breadth_first_search(problem):
 	return None
 
 def depth_first_search(problem):
-	frontier = [(Node(problem.initial))]  # Stack
+	frontier = [(Node(problem.initial))]
 	explored = set()
 	while frontier:
 		node = frontier.pop()
@@ -185,11 +166,50 @@ def depth_first_search(problem):
                         child not in frontier)
 	return None
 
+def recursive_dls(node,problem,limit):
+	if problem.goal_test(node.state):
+		return node
+	elif limit == 0:
+		return 0
+	else:
+		cutoff_occured = False
+		for child in node.expand(problem):
+			result = recursive_dls(child,problem,limit-1)
+			if result == 0:
+				cutoff_occured = True
+			elif result is not None:
+				return result
+		return 0 if cutoff_occured else None
+
+def depth_limited_search(problem,limit):
+	return recursive_dls(Node(problem.initial),problem,limit)
+
+def iterative_deepening_search(problem):
+	return None
+
+#-------------- End Uniformed Search -----------------
 
 
-for i in range(100):
+#-------------- Informed search ----------------------
+
+def a_start_search(problem):
+	return None
+
+def greedy_best_first_search(problem):
+	return None
+
+#-------------- End Informed Search -----------------
+
+cities_locations, cities_distances = generate_map()
+print(cities_distances)
+random_map = Graph(cities_distances)
+print(random_map.cities_distances)
+
+for i in range(1):
 	start = randint(65,90)
 	goal = randint(65,90)
+
+	print("Attempt solve from " + chr(start) + " to " + chr(goal))
 
 	cities_locations, cities_distances = generate_map()
 
