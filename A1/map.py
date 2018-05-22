@@ -4,6 +4,31 @@ from random import randint
 from random import shuffle
 from collections import deque
 
+
+class MapProblem:
+	def __init__(self, initial, goal, cities_distances):
+		self.initial = 'A'
+		self.goal = 'P'
+		self.cities_distances=cities_distances
+
+	def goal_test(self, state):
+		return state == self.goal
+
+	def path_cost(self,city1,city2):
+		return self.cities_distances[city1][city2]
+
+class Graph:
+
+	def __init__(self, cities_distances=None):
+		self.cities_distances = cities_distances or {}
+		self.make_undirected()
+
+	def make_undirected(self):
+		for city in self.cities_distances:
+			for (toCity, dist) in self.cities_distances[city].items():
+				self.cities_distances.setdefault(toCity,{})[city] = dist
+
+
 '''
 Generate random location for Cities in a 100x100 grid
 '''
@@ -98,8 +123,27 @@ while frontier:
 	if done == 1:
 		break
 
+random_map = Graph(cities_distances)
+
+
 
 '''
+# ---- Start Problem ------
+
+class Problem(object):
+
+	def __init__(self, initial, goal=None):
+		self.initial = 'A'
+		self.goal = 'P'
+
+	def goal_test(self, state):
+		return state = self.goal
+
+	def path_cost(self,cities_distances,city1,city2):
+		return cities_distances[city1][city2]
+
+# ----- End Problem -------
+
 
 class Node:
 
@@ -111,9 +155,15 @@ class Node:
 		self.depth=0
 		if parent:
 			self.depth = parent.depth+1
+
+	def expand(self,problem):
+		keys = list(cities_distances[city].keys())
+		return keys
+
 '''
 
 '''
+
 class Map:
 
 	def __init__ (self, cities=None):
