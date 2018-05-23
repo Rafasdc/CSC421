@@ -3,13 +3,25 @@ from scipy.spatial import distance
 from random import randint
 from random import shuffle
 from collections import deque
+from utils import memoize
+from utils import PriorityQueue
 
 
 class MapProblem:
-	def __init__(self, initial, goal, cities_distances):
+	def __init__(self, initial, goal, cities_distances, cities_locations, heuristic='e'):
 		self.initial = initial
 		self.goal = goal
 		self.cities_distances=cities_distances
+		self.cities_locations=cities_locations
+		#Set default h to he
+		self.h = self.h_e
+		#change heuristic accordingly
+		if heuristic == 'e':
+			self.h = self.h_e
+		elif heuristic == 'z':
+			self.h = self.h_zero
+		elif heuristic == 'm':
+			self.h = self.h_m
 
 	def goal_test(self, state):
 		return state == self.goal
@@ -29,11 +41,21 @@ class MapProblem:
 		new_state = cities_distances[state][action]
 		return new_state
 
+	def h_e(self,node):
+		return round(distance.euclidean(self.cities_locations[node.state],self.cities_locations[self.goal]),2)
+
+	def h_zero(self,node):
+		return 0
+
+	def h_m(self,node):
+		return round(distance.cityblock(self.cities_locations[node.state],self.cities_locations[self.goal]),2)
+
+
 class Graph:
 
 	def __init__(self, cities_distances=None):
 		self.cities_distances = cities_distances or {}
-		self.make_undirected()
+		#self.make_undirected()
 
 	def make_undirected(self):
 		for city in self.cities_distances:
@@ -51,6 +73,9 @@ class Node:
 		if parent:
 			self.depth = parent.depth+1
 
+	def __lt__(self,node):
+		return self.state < node.state
+
 	def expand(self,problem):
 		#print(self.state)
 		#print(list(problem.cities_distances[self.state].keys()))
@@ -62,7 +87,7 @@ class Node:
 		#next_node = problem.cities_distances[self.state]
 		#print(self.state)
 		#print(action)
-		return Node(action,self,action,problem.path_cost(self.state,action))		
+		return Node(action,self,None,problem.path_cost(self.state,action))
 
 
 def generate_map():
@@ -185,27 +210,50 @@ def depth_limited_search(problem,limit):
 	return recursive_dls(Node(problem.initial),problem,limit)
 
 def iterative_deepening_search(problem):
-	return None
+	for depth in range(13):
+		result = depth_limited_search(problem,depth)
+		if result != 0:
+			return result
 
 #-------------- End Uniformed Search -----------------
 
 
 #-------------- Informed search ----------------------
 
-def a_start_search(problem):
+def greedy_best_first_search(problem):
+	h = memoize(problem.h, 'h')
+	node = Node(problem.initial)
+	if problem.goal_test(node.state):
+		return node
+	frontier = PriorityQueue('min', h)
+	frontier.append(node)
+	explored = set()
+	while frontier:
+		node = frontier.pop()
+		if problem.goal_test(node.state):
+			return node
+		explored.add(node.state)
+		for child in node.expand(problem):
+			if child.state not in explored and child not in frontier:
+				frontier.append(child)
+			elif child in frontier:
+				incumbent = frontier[child]
+				if h(child) < h(incumbent):
+					del frontier[incumbent]
+					frontier.append(child)
 	return None
 
-def greedy_best_first_search(problem):
+def a_star_search(problem):
 	return None
 
 #-------------- End Informed Search -----------------
 
 cities_locations, cities_distances = generate_map()
-print(cities_distances)
+#print(cities_distances)
 random_map = Graph(cities_distances)
-print(random_map.cities_distances)
+#print(random_map.cities_distances)
 
-for i in range(1):
+for i in range(100):
 	start = randint(65,90)
 	goal = randint(65,90)
 
@@ -216,7 +264,7 @@ for i in range(1):
 	random_map = Graph(cities_distances)
 	#print(random_map.cities_distances)
 
-	problem = MapProblem(chr(start),chr(goal),cities_distances)
+	problem = MapProblem(chr(start),chr(goal),cities_distances,cities_locations)
 
 	result = breadth_first_search(problem)
 	#print(result)
@@ -237,6 +285,22 @@ for i in range(1):
 
 	print(list(reversed(path_back)))
 
+	result_i = iterative_deepening_search(problem)
+
+	node, path_back = result_i, []
+	while node:
+		path_back.append(node.state)
+		node = node.parent
+
+	print(list(reversed(path_back)))
+
+	result_gb = greedy_best_first_search(problem)
+
+	node, path_back = result_gb, []
+	while node:
+		path_back.append(node.state)
+		node = node.parent
+	print(list(reversed(path_back)))
 
 
 
