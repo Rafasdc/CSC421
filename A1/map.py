@@ -50,6 +50,9 @@ class MapProblem:
 	def h_m(self,node):
 		return round(distance.cityblock(self.cities_locations[node.state],self.cities_locations[self.goal]),2)
 
+	#Used for A* Search computes h(n) + g(n)
+	def h_g(self,node):
+		return (self.h(node) + node.path_cost)
 
 class Graph:
 
@@ -243,7 +246,32 @@ def greedy_best_first_search(problem):
 					frontier.append(child)
 	return None
 
+'''
+Same algorithm as GBFS, with the difference that uses the
+h_g function in the problem class instead of h
+h_g adds the path cost to the selected heuristic
+'''
 def a_star_search(problem):
+	h = memoize(problem.h_g, 'h')
+	node = Node(problem.initial)
+	if problem.goal_test(node.state):
+		return node
+	frontier = PriorityQueue('min', h)
+	frontier.append(node)
+	explored = set()
+	while frontier:
+		node = frontier.pop()
+		if problem.goal_test(node.state):
+			return node
+		explored.add(node.state)
+		for child in node.expand(problem):
+			if child.state not in explored and child not in frontier:
+				frontier.append(child)
+			elif child in frontier:
+				incumbent = frontier[child]
+				if h(child) < h(incumbent):
+					del frontier[incumbent]
+					frontier.append(child)
 	return None
 
 #-------------- End Informed Search -----------------
@@ -302,6 +330,13 @@ for i in range(100):
 		node = node.parent
 	print(list(reversed(path_back)))
 
+	result_a = a_star_search(problem)
+
+	node, path_back = result_a, []
+	while node:
+		path_back.append(node.state)
+		node = node.parent
+	print(list(reversed(path_back)))
 
 
 
