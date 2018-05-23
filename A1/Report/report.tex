@@ -246,7 +246,7 @@ The code uses data structures provided natively by Python as well as the Priorit
 
 \section{Code Listing}
 
-The following section describes the code along with accompanying screenshots. First, the three classes used are shown. Second, each search algorithm is presented. Finally, the entire code of the tests ran is shown, note that this code is extensive and repetitive. 
+The following section describes the code along with accompanying screenshots. First, the three classes used are shown. Second, each search algorithm is presented. Finally, the utils used in the code are shown. The code for testing is repetitive and is not shown in this section, it follows the same format as shown in Figure 5 and  4.
 
 \subsection{Classes}
 
@@ -278,6 +278,8 @@ Figure 8 shows the Node class, this class is very important in this program as i
 
 \FloatBarrier
 
+\subsection{Map Generation}
+
 \begin{figure}[htb]
   \centering
   \includegraphics[width=0.9 \textwidth]{./graphs/generate_map_1.png}
@@ -296,13 +298,17 @@ Figure 8 shows the Node class, this class is very important in this program as i
   \caption{Map Generation Function, decide how many paths each city will have.}
 \end{figure}
 
-Figure 9 shows the initial generate \_map function, it provides an optional report_paths which will include an extra return with the number of paths generated, this is added due to the requirements of this assignment. The first thing done is generate 26 random cities, and their corresponding X and Y positions. This is achieved with pure Python and the randint module from random. 
+Figure 9 shows the initial generate\_map function, it provides an optional report\_paths which will include an extra return with the number of paths generated, this is added due to the requirements of this assignment. The first thing done is generate 26 random cities, and their corresponding X and Y positions. This is achieved with pure Python and the randint module from random. 
 
-Figure 10 shows the euclidean generation of each city to its closes 5 neighbours based on it. This part starts with a tuple of lists which contain the city along its cost, it is initially instantianted to 999 as to be replaced later with the 5 closes paths. The result of this will be each city will contain an ordered list in ascending of its closest 5 cities with its corresponding cost. 
+Figure 10 shows the euclidean generation of each city to its closes 5 neighbours based on it. This part starts with a tuple of lists which contain the city along its cost, it is initially instantiated to 999 as to be replaced later with the 5 closes paths. The result of this will be each city will contain an ordered list in ascending of its closest 5 cities with its corresponding cost. 
 
-Figure 11, 
+Figure 11 builds upon the result from Figure 10, this code will randomly decide how many paths of the 5 the city will keep, this is done by first generating a number between 1 and 4 (as the max path a city can have is 4), and furthermore shuffling the keys as to keep randomization. This shuffled keys are then iterated over and some of them are removed according to the number of paths. Finally, the return of the function can provide 2 or 3 results depending on the optional report paths seen in Figure 9. 
 
 \FloatBarrier
+
+\subsection{Algorithms}
+
+All the algorithms presented in this section are based of the AIMA book Python code repository. They have been modified to add statistics required for this assignment and some to fit with the specific problem being solved.
 
 \begin{figure}[htb]
   \centering
@@ -322,6 +328,10 @@ Figure 11,
   \caption{Iterative Deepening Search algorithm.}
 \end{figure}
 
+Figure 12 and 13 presents Breadth-first Search and Depth-first search algorithms respectively. The code includes an option stats parameter to not only return the node which contains the solution, when found but also all the explored nodes, and the number of nodes generated during the execution of the code. 
+
+Figure 14 includes the code used for Iterative Deepening Search, this code uses a recursive Depth Limited Search in order to find a solution. It will iterate over a fixed depth, each time increasing by one its limit, if a solution is found the code will stop and the solution will be returned. The depth was chosen to be 13 as anything above 15 will take a considerable amount of time for a problem without a solution, the initial testing was done with 99 but in a problem with no solution the code never terminates. To keep statistics for this code as the code is recursive global variables were used to keep tracks of the visited and generated nodes along with it, these results are later used when generating the statistics of the code very similar to Figure 5. 
+
 \FloatBarrier
 
 \begin{figure}[htb]
@@ -336,7 +346,30 @@ Figure 11,
   \caption{A* search algorithm.}
 \end{figure}
 
+Figure 15 and 16 include the code for Greedy best-first search and A* respectively. Greedy best first search uses a memoize and PriorityQueue which are presented in the following subsection. They use heuristic functions, for their informed searching. With the difference in A* search being that is will use problem.h\_g which is a special function described above that will compute the sum of the heuristic function and the path cost of the current node and will use this combination as its heuristic function. Aside from that, the code is identical. Furthermore, as before the code includes the optional stats which will return in addition to the node with the solution path, all the explored nodes, and the number of nodes generated during its execution. 
+
+\FloatBarrier
+
+\subsection{Utils}
+
+The following two Figures 17 and 18 present the memoize and PriorityQueue implementations. This code is entirely from the AIMA book Python repository and are used only for the Greedy best-first search and A*. Memoization allows for a function to be remembered with a name for the entire execution of a function, in this case it is used to bind h to the corresponding heuristic function assigned in the Problem class. The PriorityQueue is used as a min queue, on both Greedy best-first search and A* search. 
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/memoization.png}
+  \caption{Memoization code.}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/priority_queue.png}
+  \caption{PriorityQueue code.}
+\end{figure}
+
+\FloatBarrier 
+
 \end{document}
+
 
 
 %%% Local Variables:
