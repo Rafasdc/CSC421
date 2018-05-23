@@ -232,12 +232,109 @@ The statistics in the tables above were calculated in the same way as in the uni
 
 \section{Implementation Overview}
 
-Implementation Overview to go here.
+The code created for this assignment is written entirely in Python. The code is ordered by first defining global variables, classes, functions, and the use of all the aforementioned. The code contain three classes: 
+
+\begin{itemize}
+	\item MapProblem which creates the problem, this class includes initial state, goal state, cities distances, cities locations and cities locations. Additionally it includes functions for goal test, path cost, action and results, and if needed heuristic functions. 
+	\item Graph this class entire purpose is to hold the map in an object, and turn into an undirected graph if requested
+	\item Node the class that allows navigation in the search, it includes state, parent, action, cost, and depth. Additionally, it includes the functions for expanding a node and generating the child nodes. 
+\end{itemize}
+
+The rest of the code is contained outside classes and is distributed as follows. Map generation is done from a function with an option parameter to return how many paths were generated, this is to report average paths as required by this assignment. Each search algorithm is implemented as a function that takes a problem object, additionally it contains an optional parameter to return stats for this assignment. All the stats and execution of the search algorithms are performed after the entire declaration of classes and functions. Some screenshots of this code can be observed in Figures 1, 4, and 5 of this report. 
+
+The code uses data structures provided natively by Python as well as the PriorityQueue and Memoize as provided by the AIMA book, this data structures are stored in a separate utils.py file and are a exact copy of the AIMA books implementation. Furthermore, for the calculation of Euclidean and Manhattan distance the distance module from scipy.spatial is used. Additionally, to calculate averages and max in lists numpy is used. Finally, all the randomization is done by the randint and shuffle modules from the random Python package. 
 
 \section{Code Listing}
 
-Code explanation to go here. 
+The following section describes the code along with accompanying screenshots. First, the three classes used are shown. Second, each search algorithm is presented. Finally, the entire code of the tests ran is shown, note that this code is extensive and repetitive. 
 
+\subsection{Classes}
+
+The code for all the classes used in the code is shown in this section. This code is based on the AIMA book code repository for Python.
+
+ \begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/class_map.png}
+  \caption{The MapProblem class.}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/class_graph.png}
+  \caption{The Graph class.}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/class_node.png}
+  \caption{The Node class.}
+\end{figure}
+
+Figure 6 shows the MapProblem which is used as the base problem for this assignment. As it was mentioned before it includes initial state, goal state, cities distances, cities locations and a heuristic function. The heuristic function defaults to he, but it can be changed to h0 or hm if specifying heuristic z or m respectively. Furthermore, the class includes the functions to check if the desired goal has been reached, this is done by directly comparing the string of state with goal state. Additionally, the path cost is simply computed from the dictionary of cities distances, the function takes two cities and will return the cost of travel between both of them. The actions function will return the possible cities to travel to from the current state, as that is the only possible thing to do in this problem. The result function, will yield what would be result if traveling to a city (action) from the current state, this function is unused in the entire code but was left for completeness. Finally, the heuristic functions do as described in section 2, with the only not described being h\_g, this function is only used by A\* and it has the difference of returning the result of the current heuristic function plus the cost of the path cost of the node. 
+
+Figure 7 shows the Graph class, this class only purpose is to turn the map into an object. Additionally, the Graph class provides an option of forcing bi-directionality in every city by making it an undirected graph. The way it works is for example if A has a path to Z of cost 11, but Z may not have that path in its internal dictionary, therefore the code will loop over every city and add it if its not there. In this case as A is the first city in the dictionary it will loop over all its neighbours, and loop on them to check their paths, if any is missing it will add them. This is achieved by using the setdefault Python function. 
+
+Figure 8 shows the Node class, this class is very important in this program as it is the class that allows navigation in the graph. It contains all necessary information to traverse, state, parent, action, path\_cost, and depth. The class only has expand and child node functions which are interconnected, as only expand is called in the code which in turn calls child node which is the function to generate the child node and populate it accordingly. 
+
+\FloatBarrier
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/generate_map_1.png}
+  \caption{Initial Map Generation Function, which generates X and Y coordinates.}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/generate_map_2.png}
+  \caption{Map Generation Function, calculates Euclidean distance and keep 5 closest.}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/generate_map_3.png}
+  \caption{Map Generation Function, decide how many paths each city will have.}
+\end{figure}
+
+Figure 9 shows the initial generate \_map function, it provides an optional report_paths which will include an extra return with the number of paths generated, this is added due to the requirements of this assignment. The first thing done is generate 26 random cities, and their corresponding X and Y positions. This is achieved with pure Python and the randint module from random. 
+
+Figure 10 shows the euclidean generation of each city to its closes 5 neighbours based on it. This part starts with a tuple of lists which contain the city along its cost, it is initially instantianted to 999 as to be replaced later with the 5 closes paths. The result of this will be each city will contain an ordered list in ascending of its closest 5 cities with its corresponding cost. 
+
+Figure 11, 
+
+\FloatBarrier
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/bfs.png}
+  \caption{Breadth-first Search algorithm.}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/dfs.png}
+  \caption{Depth-first Search algorithm.}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/iterative_deepening.png}
+  \caption{Iterative Deepening Search algorithm.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/gbfs.png}
+  \caption{Greedy best-first search algorithm.}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.9 \textwidth]{./graphs/a_star.png}
+  \caption{A* search algorithm.}
+\end{figure}
 
 \end{document}
 
