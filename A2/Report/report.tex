@@ -1,0 +1,66 @@
+%% -*- mode: latex; mode: flyspell -*-
+\documentclass[12pt, letter]{article}
+
+%% Class name and Assignment number
+%%
+\newcommand{\courseName}{CSC421: Artificial Intelligence}
+\newcommand{\assignName}{Assignment~2}
+
+%% Packages
+\usepackage{amsmath,amsfonts,amssymb,amsthm,dsfont}
+\usepackage{physics}
+\usepackage{graphicx}
+\usepackage[bookmarks=false]{hyperref}
+\usepackage{color}
+\usepackage{lipsum}
+\usepackage{placeins}
+\usepackage{float}
+\restylefloat{table}
+
+%% Paper format
+\usepackage{geometry}
+\geometry{
+    letterpaper,
+    %% total={216mm,279mm}, %< NSERC size
+    margin=2.00cm,     %< default
+    %% margin=1.87cm,       %< NSERC tightest
+}
+
+%% Headers and footers
+\usepackage[explicit]{titlesec}
+\newpagestyle{titlesec_assignment}{
+  \sethead{\courseName}{}{\assignName}\setfoot{}{\thepage}{}
+  \headrule
+  %% \footrule
+}
+
+\begin{document}
+
+%% Set header and footer
+\pagestyle{titlesec_assignment}
+
+%% Title
+\title{\courseName\\\assignName}
+\author{Rafael Solorzano}
+\maketitle
+
+\section{Introduction}
+
+Intro to go here
+
+\section{Monopoly}
+
+Monopoly discussion to go here
+
+\section{Learning}
+
+Learning and classification to go here
+
+\end{document}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
