@@ -11,11 +11,10 @@ def roll_dice():
 def shuffle_chance():
 	random.shuffle(deck)
 
-def get_chance_card():
+def get_chance_card(cur_pos):
 	#Define chance cards here, and draw from them.
 	#After drawing the card is placed at the back of
 	#'Deck' again.
-
 	card = deck[0]
 	print(deck)
 	
@@ -43,14 +42,87 @@ def get_chance_card():
 	16: ('Collect 100', 0),
 	}
 
-	return card
+	cards[card] = (cards[card][0], cards[card][1]+1)
+
+	position = handle_chance(card, cur_pos)
+
+	return position
 
 
 #Will handle the chance card according to its rule
 #will call get chance card and process accordingly
 #Takes current position to move backward forward if necessary
 #NOTE: Get out of jail is IGNORED. 
-def handle_chance(chance_card):
+def handle_chance(card,pos):
+	#Go
+	if card == 1:
+		return 40
+	#Illinois
+	elif card == 2:
+		return 25
+	#St Charles
+	elif card == 3:
+		return 12
+	#Nearest Utility
+	elif card == 4:
+		electric = 13 - pos
+		water = 29 - pos
+		utilities = [electric, water]
+		return min(utilities)
+	#Nearest Railroad
+	elif card == 5:
+		reading_pos = 6 - pos
+		penn_pos = 16 - pos
+		bao_pos = 26 - pos
+		sho_pos = 26 - pos
+		trains = [reading_pos, penn_pos, bao_pos, sho_pos]
+		return min(trains)
+	#Get 50
+	elif card == 6:
+		#NOT IMPLEMENTED
+		return 0
+	#Get out of Jail Free
+	elif card == 7:
+		#NOT IMPLEMENTED
+		return 0
+	#Go Back 3
+	elif card == 8:
+		temp_pos = position-3
+		temp_mod = temp_pos%40
+		if temp_mod == 0:
+			return 40
+		else:
+			return temp_mod
+	#Go to Jail
+	elif card == 9:
+		return 11
+	#Pay Repairs
+	elif card == 10:
+		#NOT IMPLEMENTED
+		return 0
+	#Pay 15
+	elif card == 11:
+		#NOT IMPLEMENTED
+		return 0
+	#Reading Railroad
+	elif card == 12:
+		return 6
+	#Boardwalk
+	elif card == 13:
+		return 40
+	#Pay each player 50
+	elif card == 14:
+		#NOT IMPLEMENTED
+		return 0
+	#Collect 150
+	elif card == 15:
+		#NOT IMPLEMENTED
+		return 0
+	#Collect 100
+	elif card == 16:
+		#NOT IMPLEMENTED
+		return 0
+
 	return 0
 
 
@@ -118,19 +190,25 @@ def play_monopoly():
 		if (cur_pos == 0):
 			cur_pos = 40
 		print(cur_pos)
-		if cur_pos == 8 or cur_pos == 23 or cur_pos == 37:
-			get_chance_card()
 		#Increase counter
 		curr_landings = board[cur_pos][1]+1
 		#Replace tuple with new increased counter
 		board[cur_pos] = (board[cur_pos][0], curr_landings)
 		print(board[cur_pos])
+		#Check if jail and increase accordingly
 		if is_jail(board[cur_pos][0]):
 			cur_pos = 10
 			curr_landings = board[cur_pos][1]+1
 			board[cur_pos] = (board[cur_pos][0], curr_landings)
 			continue
-
+		#check if chance and increase counters with new position
+		#of chance card, if any
+		if cur_pos == 8 or cur_pos == 23 or cur_pos == 37:
+			position = get_chance_card(cur_pos)
+			if position != 0:
+				cur_pos = position
+				curr_landings = board[cur_pos][1]+1
+				board[cur_pos] = (board[cur_pos][0], curr_landings)
 		#Roll again if doubles
 		#NOTE: 3 consecutive will NOT yield jail
 		while (dice1 == dice2):
