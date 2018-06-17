@@ -1,41 +1,63 @@
+import random
 from random import randint
 
+deck = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
 
 def roll_dice():
 	dice_1 = randint(1,6)
 	dice_2 = randint(1,6)
 	return (dice_1,dice_2)
 
+def shuffle_chance():
+	random.shuffle(deck)
+
 def get_chance_card():
 	#Define chance cards here, and draw from them.
 	#After drawing the card is placed at the back of
 	#'Deck' again.
 
-	deck = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] 
+	card = deck[0]
+	print(deck)
+	
+	for i in range(len(deck)-1):
+		deck[i] = deck[i+1]
+	deck[15] = card	
+	print(deck)
 
 	cards = {
-	1:  ('Card', 0),
-	2:  ('Card', 0),
-	3:  ('Card', 0),
-	4:  ('Card', 0),
-	5:  ('Card', 0),
-	6:  ('Card', 0),
-	7:  ('Card', 0),
-	8:  ('Card', 0),
-	9:  ('Card', 0),
-	10: ('Card', 0),
-	11: ('Card', 0),
-	12: ('Card', 0),
-	13: ('Card', 0),
-	14: ('Card', 0),
-	15: ('Card', 0),
-	16: ('Card', 0),
+	1:  ('Advance to Go', 0),
+	2:  ('Advance to Illinois Ave', 0),
+	3:  ('Advance to St. Charles Place', 0),
+	4:  ('Advance to Nearest Utility', 0),
+	5:  ('Advance to nearest Railroad', 0),
+	6:  ('Bank Pays You 50', 0),
+	7:  ('Get out of Jail Free', 0),
+	8:  ('Go Back 3 Spaces', 0),
+	9:  ('Go to Jail', 0),
+	10: ('Pay Repairs', 0),
+	11: ('Pay tax of 15', 0),
+	12: ('Go to Reading Railroad', 0),
+	13: ('Go to Boardwalk', 0),
+	14: ('Pay each player 50', 0),
+	15: ('Collect 150', 0),
+	16: ('Collect 100', 0),
 	}
 
+	return card
 
-	return 1
+
+#Will handle the chance card according to its rule
+#will call get chance card and process accordingly
+#Takes current position to move backward forward if necessary
+#NOTE: Get out of jail is IGNORED. 
+def handle_chance(chance_card):
+	return 0
+
 
 def play_monopoly():
+	print(deck)
+	shuffle_chance()
+	print(deck)
 	#Create each monopoly square and hold it
 	board = {
 	1: ('Go',0),
@@ -87,7 +109,7 @@ def play_monopoly():
 	#Create cur_pos with pos 0 to represent Go
 	cur_pos = 0
 	#Roll the dice n times
-	for i in range(1000):
+	for i in range(10):
 		#Roll the dices, store positions
 		#Mod the position to stay within 40 squares
 		dice1, dice2 = roll_dice()
@@ -96,6 +118,8 @@ def play_monopoly():
 		if (cur_pos == 0):
 			cur_pos = 40
 		print(cur_pos)
+		if cur_pos == 8 or cur_pos == 23 or cur_pos == 37:
+			get_chance_card()
 		#Increase counter
 		curr_landings = board[cur_pos][1]+1
 		#Replace tuple with new increased counter
