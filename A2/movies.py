@@ -3,12 +3,17 @@ import os
 
 path_pos = "/Users/rafa/Downloads/review_polarity/txt_sentoken/pos/"
 path_neg = "/Users/rafa/Downloads/review_polarity/txt_sentoken/neg/"
+all_reviews = []
+positive_reviews = []
+negative_reviews = []
 positive_vectors=[]
 negative_vectors=[]
 words = ["awful","bad","boring","dull","effective","enjoyable","great","hilarious"]
 
 i=0
 for pos_reviews_file in os.listdir(path_pos):
+	all_reviews.append(path_pos+pos_reviews_file)
+	positive_reviews.append(path_pos+pos_reviews_file)
 	pos_review = open(path_pos+pos_reviews_file, "r")
 	vector = [0,0,0,0,0,0,0,0]
 	positive_vectors.append(vector)
@@ -34,6 +39,8 @@ for pos_reviews_file in os.listdir(path_pos):
 
 i=0
 for neg_reviews_file in os.listdir(path_neg):	
+	all_reviews.append(path_neg+neg_reviews_file)
+	negative_reviews.append(path_neg+neg_reviews_file)
 	neg_review = open(path_neg+neg_reviews_file, "r")
 	vector = [0,0,0,0,0,0,0,0]
 	for line in neg_review:
@@ -68,4 +75,32 @@ print(words)
 print(probs_neg)
 print(words)
 
+def likelihood(review, probs_for_type):
+	probability_product = 1.0
+	for (i,w) in enumerate(review):
+		if (w==1):
+			probability=probs_for_type[i]
+		else:
+			probability= 1.0 - probs_for_type[i]
+		probability_product *= probability
+	return probability_product
 
+
+def predict(review):
+	scores = [likelihood(review,probs_pos), likelihood(review,probs_neg)]
+	labels = ['positive', 'negative']
+	return labels[np.argmax(scores)]
+
+def predict_set(test_set, truth_label):
+	score = 0
+	for r in test_set:
+		if predict(r) == truth_label:
+			score+=1
+	return score/10.0
+
+
+print(predict(positive[98]))
+print(predict(negative[83]))
+
+print(predict_set(positive,'positive'))
+print(predict_set(negative,'negative'))
