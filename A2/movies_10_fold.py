@@ -16,6 +16,7 @@ words = ["awful","bad","boring","dull","effective","enjoyable","great","hilariou
 
 
 for pos_reviews_file in os.listdir(path_pos):
+	#Regex to get only the number associated to file
 	m = re.search('(?<=cv)(.*)(?=_)',pos_reviews_file)
 	num = int(m.group())
 
@@ -24,6 +25,7 @@ for pos_reviews_file in os.listdir(path_pos):
 	pos_review = open(path_pos+pos_reviews_file, "r")
 	vector = [0,0,0,0,0,0,0,0]
 
+	#Append to correct fold
 	fold = 0
 	if num <= 99:
 		folds_pos[0].append(vector)
@@ -56,6 +58,7 @@ for pos_reviews_file in os.listdir(path_pos):
 		folds_pos[9].append(vector)
 		fold = 9
 
+	#Update vector in corresponding fold
 	for line in pos_review:
 		for word in line.split():
 			if word.lower() == "awful":

@@ -3,7 +3,6 @@ import os
 
 path_pos = "/Users/rafa/Downloads/review_polarity/txt_sentoken/pos/"
 path_neg = "/Users/rafa/Downloads/review_polarity/txt_sentoken/neg/"
-all_reviews = []
 positive_reviews = []
 negative_reviews = []
 positive_vectors=[]
@@ -12,11 +11,16 @@ words = ["awful","bad","boring","dull","effective","enjoyable","great","hilariou
 
 i=0
 for pos_reviews_file in os.listdir(path_pos):
-	all_reviews.append(path_pos+pos_reviews_file)
+	#Append Path
 	positive_reviews.append(path_pos+pos_reviews_file)
+	#Read the file
 	pos_review = open(path_pos+pos_reviews_file, "r")
+	#Create initial Vector
 	vector = [0,0,0,0,0,0,0,0]
+	#Append empty Vector
 	positive_vectors.append(vector)
+	#Read file line by line
+	#And change corresponing position according to words
 	for line in pos_review:
 		for word in line.split():
 			if word.lower() == "awful":
@@ -37,9 +41,7 @@ for pos_reviews_file in os.listdir(path_pos):
 				positive_vectors[i][7] = 1
 	i+=1
 
-i=0
 for neg_reviews_file in os.listdir(path_neg):	
-	all_reviews.append(path_neg+neg_reviews_file)
 	negative_reviews.append(path_neg+neg_reviews_file)
 	neg_review = open(path_neg+neg_reviews_file, "r")
 	vector = [0,0,0,0,0,0,0,0]
@@ -63,12 +65,15 @@ for neg_reviews_file in os.listdir(path_neg):
 				vector[7] = 1
 	negative_vectors.append(vector)
 
+#Turn into Numpy Arrays for easier processing
 positive = np.asarray(positive_vectors)
 negative = np.asarray(negative_vectors)
 
-
+#Get the Probabilities of each word
 probs_pos = (positive.sum(axis=0).astype(float)+1.0)/1000
 probs_neg = (negative.sum(axis=0).astype(float)+1.0)/1000
+
+#Print them
 print(probs_pos)
 print(words)
 
@@ -78,6 +83,7 @@ print(words)
 def likelihood(review, probs_for_type):
 	probability_product = 1.0
 	for (i,w) in enumerate(review):
+		#If word in vector
 		if (w==1):
 			probability=probs_for_type[i]
 		else:
@@ -97,10 +103,6 @@ def predict_set(test_set, truth_label):
 		if predict(r) == truth_label:
 			score+=1
 	return score/10.0
-
-
-print(predict(positive[98]))
-print(predict(negative[83]))
 
 print(predict_set(positive,'positive'))
 print(predict_set(negative,'negative'))

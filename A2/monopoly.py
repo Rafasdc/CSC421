@@ -1,5 +1,6 @@
 import random
 from random import randint
+import numpy as np
 
 deck = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
 
@@ -56,7 +57,7 @@ def get_chance_card(cur_pos):
 def handle_chance(card,pos):
 	#Go
 	if card == 1:
-		return 40
+		return 1
 	#Illinois
 	elif card == 2:
 		return 25
@@ -68,15 +69,27 @@ def handle_chance(card,pos):
 		electric = 13 - pos
 		water = 29 - pos
 		utilities = [electric, water]
-		return min(utilities)
+		minimum =  min(utilities)
+		if minimum == electric:
+			return 13
+		else:
+			return 29
 	#Nearest Railroad
 	elif card == 5:
 		reading_pos = 6 - pos
 		penn_pos = 16 - pos
 		bao_pos = 26 - pos
-		sho_pos = 26 - pos
+		sho_pos = 36 - pos
 		trains = [reading_pos, penn_pos, bao_pos, sho_pos]
-		return min(trains)
+		minimum = min(trains)
+		if minimum == reading_pos:
+			return 6
+		elif minimum == penn_pos:
+			return 16
+		elif minimum == bao_pos:
+			return 26
+		elif minimum == sho_pos:
+			return 36
 	#Get 50
 	elif card == 6:
 		#NOT IMPLEMENTED
@@ -87,7 +100,7 @@ def handle_chance(card,pos):
 		return 0
 	#Go Back 3
 	elif card == 8:
-		temp_pos = position-3
+		temp_pos = pos-3
 		temp_mod = temp_pos%40
 		if temp_mod == 0:
 			return 40
@@ -178,10 +191,10 @@ def play_monopoly():
 		return space == 'Go To Jail'
 	
 
-	#Create cur_pos with pos 0 to represent Go
-	cur_pos = 0
+	#Create cur_pos with pos 1 to represent Go
+	cur_pos = 1
 	#Roll the dice n times
-	for i in range(10):
+	for i in range(100 ):
 		#Roll the dices, store positions
 		#Mod the position to stay within 40 squares
 		dice1, dice2 = roll_dice()
@@ -189,12 +202,12 @@ def play_monopoly():
 		cur_pos %= 40
 		if (cur_pos == 0):
 			cur_pos = 40
-		print(cur_pos)
+		#print(cur_pos)
 		#Increase counter
 		curr_landings = board[cur_pos][1]+1
 		#Replace tuple with new increased counter
 		board[cur_pos] = (board[cur_pos][0], curr_landings)
-		print(board[cur_pos])
+		#print(board[cur_pos])
 		#Check if jail and increase accordingly
 		if is_jail(board[cur_pos][0]):
 			cur_pos = 10
@@ -217,10 +230,10 @@ def play_monopoly():
 			cur_pos %= 40
 			if (cur_pos == 0):
 				cur_pos = 40
-			print(cur_pos)
+			#print(cur_pos)
 			curr_landings = board[cur_pos][1]+1
 			board[cur_pos] = (board[cur_pos][0], curr_landings)
-			print(board[cur_pos])
+			#print(board[cur_pos])
 			if is_jail(board[cur_pos][0]):
 				cur_pos = 10
 				curr_landings = board[cur_pos][1]+1
@@ -230,7 +243,50 @@ def play_monopoly():
 	#return the final board with all the tallies
 	return board
 
-railroads = []	
 
-result = play_monopoly()
-print(result)
+#Create list to store landings
+reading_railroad = []
+pennsylvania_railroad = []
+bao_railroad = []
+short_line = []
+go = []
+mediterranean = []
+boardwalk = []
+
+#Run the monopoly game 1000 times
+for i in range(1000):
+	result = play_monopoly()
+	#Store Each Probablities
+	reading_railroad.append(result[6][1])
+	pennsylvania_railroad.append(result[16][1])
+	bao_railroad.append(result[26][1])
+	short_line.append(result[36][1])
+	go.append(result[1][1])
+	mediterranean.append(result[2][1])
+	boardwalk.append(result[40][1])
+
+#Print Stats
+print("Average landings on Reading Railroad " + str(np.mean(reading_railroad)))
+print("Average landings on Pennsylvania Railroad " + str(np.mean(pennsylvania_railroad)))
+print("Average landings on BAO Railroad " + str(np.mean(bao_railroad)))
+print("Average landings on Short Line " + str(np.mean(short_line)))
+print("Average landings on GO " + str(np.mean(go)))
+print("Average landings on Mediterranean " + str(np.mean(mediterranean)))
+print("Average landings on Boardwalk " + str(np.mean(boardwalk)))
+
+print("Total landings on Reading Railroad " + str(np.sum(reading_railroad)))
+print("Total landings on Pennsylvania Railroad " + str(np.sum(pennsylvania_railroad)))
+print("Total landings on BAO Railroad " + str(np.sum(bao_railroad)))
+print("Total landings on Short Line " + str(np.sum(short_line)))
+print("Total landings on GO " + str(np.sum(go)))
+print("Total landings on Mediterranean " + str(np.sum(mediterranean)))
+print("Total landings on Boardwalk " + str(np.sum(boardwalk)))
+
+print("Probability of landing on Reading Railroad " + str(np.sum(reading_railroad)/100000))
+print("Probability of landing on Pennsylvania Railroad " + str(np.sum(pennsylvania_railroad)/100000))
+print("Probability of landing on BAO Railroad " + str(np.sum(bao_railroad)/100000))
+print("Probability of landing on Short Line " + str(np.sum(short_line)/100000))
+print("Probability of landing on GO " + str(np.sum(go)/100000))
+print("Probability of landing on Mediterranean " + str(np.sum(mediterranean)/100000))
+print("Probability of landing on Boardwalk " + str(np.sum(boardwalk)/100000))
+

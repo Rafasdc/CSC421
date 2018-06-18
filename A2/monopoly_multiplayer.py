@@ -202,6 +202,7 @@ def play_monopoly():
 		elif card == 13:
 			land_on_property(40,player)
 			return 40
+		#------ The Collect or Pay Cards ---------
 		#Pay each player 50
 		elif card == 14:
 			if player == 1:
@@ -242,6 +243,7 @@ def play_monopoly():
 			player_2 += 200
 			print("Player 2 receives 200 for passing Go")
 			print("Player 2 money is now: " + str(player_2))
+
 	def pay_rent(space,player_to_pay):
 		global player_1
 		global player_2
@@ -336,7 +338,7 @@ def play_monopoly():
 			print("Player 2 wins with $" + str(player_2) + " over $" + str(player_1) + " of player 1.")
 
 
-	#Create cur_pos with pos 0 to represent Go
+	#Create cur_pos with pos 1 to represent Go
 	cur_pos = [0,1,1]
 	#Roll the dice n times
 	for i in range(200):
