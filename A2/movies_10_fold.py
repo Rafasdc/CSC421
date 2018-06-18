@@ -145,8 +145,8 @@ fold_neg = np.asarray(folds_neg)
 
 probs_pos = (fold_pos.sum(axis=1).astype(float)+1.0)/100
 probs_neg = (fold_neg.sum(axis=1).astype(float)+1.0)/100
-print(probs_pos)
-print(probs_neg)
+#print(probs_pos)
+#print(probs_neg)
 
 
 def likelihood(review, probs_for_type,fold):
@@ -176,18 +176,22 @@ def predict_set(test_set, truth_label,fold):
 averages_positive = []
 averages_negative = []
 
+print("Calculating Positive Reviews 10-fold")
 for i in range(10):
 	pos_score = predict_set(folds_pos[i],'positive',i)
 	averages_positive.append(pos_score)
-	print(pos_score)
+	print("Fold " + str(i) + " accuracy: " + str(pos_score))
 
+print("Calculating Negative Reviews 10-fold")
 for j in range(10):
-	neg_score = predict_set(folds_neg[i],'negative',i)
+	neg_score = predict_set(folds_neg[j],'negative',j)
 	averages_negative.append(neg_score)
-	print(neg_score)
+	print("Fold " + str(j) + " accuracy: " + str(neg_score))
 
 
+print("Average Positive Review Accuracy")
 print(np.mean(averages_positive))
+print("Average Negative Review Accuracy")
 print(np.mean(averages_negative))
 
 '''

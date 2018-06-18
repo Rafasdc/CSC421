@@ -264,9 +264,22 @@ The confusion matrix for this problem is shown in Table 2. Further, the code to 
   \caption{Calculate the accuracy of each review prediction.}
 \end{figure}
 
+\begin{table}[]
+\centering
+\caption{Confusion Matrix.}
+\label{my-label}
+\begin{tabular}{lll}
+Real\textbackslash{}Believe & True (Positive) & False (Negative) \\
+True (Positive)             & 756             & 244              \\
+False (Negative)            & 408             & 592             
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+
 \subsection{10-fold cross-validation}
 
-The 10-fold version of the code, increased the overall accuracy of the prediction. First, the code is parsed in a way to account for the 000 - 099, way of creating the folds for the positive and negative reviews. The code of the parsing is shown in Figure 23. Further, probabilities for each fold, are calculated in a similar matter to Figure 19, using numpy. Finally, the likelihood, predict, and predict\_set were modified in order to account for a fold parameter, to account for the current fold being used, this way the correct probabilities associated with that fold is used, that was the only change done to this functions, nevertheless the code is shown in Figure 24. 
+The 10-fold version of the code, yielded better accuracy for the predictions. First, the code is parsed in a way to account for the 000 - 099, way of creating the folds for the positive and negative reviews. The code of the parsing is shown in Figure 23. Further, probabilities for each fold, are calculated in a similar matter to Figure 19, using numpy. Finally, the likelihood, predict, and predict\_set were modified in order to account for a fold parameter, to account for the current fold being used, this way the correct probabilities associated with that fold is used, that was the only change done to this functions, nevertheless the code is shown in Figure 24. 
 
 To get the total accuracy, the individual accuracy per fold is stored in a list, this is then averaged and we get the total accuracy. The code that calculated this is shown in Figure 25. The results obtained by these code is shown in Figure 26. Finally, the confusion matrix for the 10-fold version is shown in Table 3. 
 
@@ -275,6 +288,37 @@ To get the total accuracy, the individual accuracy per fold is stored in a list,
   \includegraphics[width=0.6 \textwidth]{./figures/folds.png}
   \caption{Distributing vectors, into 10-folds.}
 \end{figure}
+
+ \begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.7 \textwidth]{./figures/predict_fold.png}
+  \caption{Updated code to include folds.}
+\end{figure}
+
+ \begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.7 \textwidth]{./figures/10_fold_averages.png}
+  \caption{The 10-fold accuracy calculations.}
+\end{figure}
+
+ \begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.7 \textwidth]{./figures/10_fold_result.png}
+  \caption{The 10-fold results.}
+\end{figure}
+
+\begin{table}[]
+\centering
+\caption{Confusion Matrix.}
+\label{my-label}
+\begin{tabular}{lll}
+Real\textbackslash{}Believe & True (Positive) & False (Negative) \\
+True (Positive)             & 757             & 243              \\
+False (Negative)            & 381             & 619             
+\end{tabular}
+\end{table}
+
+\FloatBarrier
 
 \end{document}
 
