@@ -16,12 +16,12 @@ def get_chance_card(cur_pos):
 	#After drawing the card is placed at the back of
 	#'Deck' again.
 	card = deck[0]
-	print(deck)
+	#print(deck)
 	
 	for i in range(len(deck)-1):
 		deck[i] = deck[i+1]
 	deck[15] = card	
-	print(deck)
+	#print(deck)
 
 	cards = {
 	1:  ('Advance to Go', 0),
@@ -127,9 +127,9 @@ def handle_chance(card,pos):
 
 
 def play_monopoly():
-	print(deck)
+	#print(deck)
 	shuffle_chance()
-	print(deck)
+	#print(deck)
 	#Create each monopoly square and hold it
 	board = {
 	1: ('Go',0),
@@ -229,6 +229,8 @@ def play_monopoly():
 		
 	#return the final board with all the tallies
 	return board
+
+railroads = []	
 
 result = play_monopoly()
 print(result)
