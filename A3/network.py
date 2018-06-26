@@ -3,6 +3,8 @@
 from pgmpy.models import BayesianModel
 from pgmpy.factors.discrete import TabularCPD
 from pgmpy.inference import VariableElimination
+from pgmpy.models import MarkovModel
+from pgmpy.inference import Mplp
 
 music_model = BayesianModel([('Difficulty','Rating'),
 						('Musicianship', 'Rating'),
@@ -53,7 +55,9 @@ print(exam_cpd)
 print(music_model.edges())
 
 
-music_model.add_cpds(rating_cpd,difficulty_cpd,musicianship_cpd,letter_cpd,exam_cpd)
+music_model.add_cpds(difficulty_cpd,musicianship_cpd,letter_cpd,exam_cpd,rating_cpd)
+
+
 
 print(music_model.get_cpds())
 
@@ -84,15 +88,15 @@ print(p_l_s['Letter'])
 p_l_s_m_w = music_infer.query(variables=['Letter'],evidence={'Musicianship':0})
 print(p_l_s_m_w['Letter'])
 
-#m_1 = music_infer.map_query(variables=['Musicianship'],evidence={'Musicianship':1})
+#---------Approximate Inference-----------
 
+#music_markov = music_model.to_markov_model()
 
+music_markov = music_model.to_markov_model()
 
+print(music_markov.check_model())
 
-'''
-			values=[[0.3,0.4,0.3],
-					[0.05,0.25,0.7],
-					[0.9,0.08,0.02],
-					[0.5,0.3,0.2]],
+music_mplp = Mplp(music_markov)
 
-'''
+print(music_mplp.map_query(100000000000000))
+
