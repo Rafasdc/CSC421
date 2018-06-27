@@ -27,7 +27,7 @@ print(run(1,x,grandparent(x,'Kylo Ren')))
 
 
 
-#--------------- 'Pure' Python ------------------------
+#--------------- 'Standard Python ------------------------
 
 print("\n \n \n Switching to Pure Python \n \n \n")
 
@@ -37,12 +37,16 @@ from collections import defaultdict
 #Each key is the parent, the list is the children
 family_parents = defaultdict(list)
 
+#Add children of Darth Vader
 family_parents["Darth Vader"].append("Luke Skywalker")
 
+#Add Children of Darth Vader
 family_parents["Darth Vader"].append("Leia Organa")
 
+#Add Children of Leia
 family_parents["Leia Organa"].append("Kylo Ren")
 
+#Add Children of Han
 family_parents["Han Solo"].append("Kylo Ren")
 
 def get_parents(name):
