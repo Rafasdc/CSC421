@@ -5,6 +5,7 @@ from pgmpy.factors.discrete import TabularCPD
 from pgmpy.inference import VariableElimination
 from pgmpy.models import MarkovModel
 from pgmpy.inference import Mplp
+from pgmpy.factors.discrete import DiscreteFactor
 
 music_model = BayesianModel([('Difficulty','Rating'),
 						('Musicianship', 'Rating'),
@@ -46,37 +47,43 @@ exam_cpd = TabularCPD(
 			evidence=['Musicianship'],
 			evidence_card=[2])
 
-print(rating_cpd)
-print(difficulty_cpd)
-print(musicianship_cpd)
-print(letter_cpd)
-print(exam_cpd)
+#print(rating_cpd)
+#print(difficulty_cpd)
+#print(musicianship_cpd)
+#print(letter_cpd)
+#print(exam_cpd)
 
 print(music_model.edges())
 
-
+#Add the CPDS to the model
 music_model.add_cpds(difficulty_cpd,musicianship_cpd,letter_cpd,exam_cpd,rating_cpd)
 
-
-
-print(music_model.get_cpds())
+#print(music_model.get_cpds())
 
 print(music_model.check_model())
 
+#Create object to perform inference on model
 music_infer = VariableElimination(music_model)
 
+#Probability Musicianship
 m_1 = music_infer.query(variables=['Musicianship'])
 print(m_1['Musicianship'])
 
+#Probability Difficulty
 d_l = music_infer.query(variables=['Difficulty'])
 print(d_l['Difficulty'])
 
-r_2s_g_m_s_d_l = music_infer.query(variables=['Rating'],evidence={'Musicianship':1,'Difficulty':0})
+#Probability Rating **, Given
+#strong Musici and low difficulty
+r_2s_g_m_s_d_l = music_infer.query(variables=['Rating'],
+	evidence={'Musicianship':1,'Difficulty':0})
 print(r_2s_g_m_s_d_l['Rating'])
 
+#Probability exam given musianship strong
 p_e = music_infer.query(variables=['Exam'],evidence={'Musicianship':1})
-print(p_e['Exam'])
+print(p_e["Exam"])
 
+#Probability letter given rating is **
 p_l_w_g_r_2_s = music_infer.query(variables=['Letter'],evidence={'Rating':1})
 print(p_l_w_g_r_2_s['Letter'])
 
@@ -84,7 +91,7 @@ print(p_l_w_g_r_2_s['Letter'])
 p_l_s = music_infer.query(variables=['Letter'])
 print(p_l_s['Letter'])
 
-#Probability Letter is Strong, given not strong musician.
+#Probability Letter is Strong, given George not strong musician.
 p_l_s_m_w = music_infer.query(variables=['Letter'],evidence={'Musicianship':0})
 print(p_l_s_m_w['Letter'])
 
@@ -98,5 +105,4 @@ print(music_markov.check_model())
 
 music_mplp = Mplp(music_markov)
 
-print(music_mplp.map_query(100000000000000))
-
+print(music_mplp.map_query(100))

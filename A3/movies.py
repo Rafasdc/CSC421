@@ -17,16 +17,9 @@ reviews = load_files("/Users/rafa/Downloads/review_polarity/txt_sentoken/")
 #Print the categories to check
 print("Categories are " + str(reviews.target_names))
 
-#Split the data into train and test
-#The test size is set to default sklearn of 25
-X_train, X_test, y_train, y_test = train_test_split(
-	reviews.data,reviews.target,test_size=0.25,random_state=0)
-
-
 
 
 #Generate the Two Pipelines for each of Multinomial and Bernoulli NB
-
 text_multi = Pipeline([('vect',CountVectorizer()),
 					 ('tfidf', TfidfTransformer()),
 					 ('clf', MultinomialNB()),
@@ -36,6 +29,11 @@ text_bernoulli = Pipeline([('vect',CountVectorizer()),
 					 ('tfidf', TfidfTransformer()),
 					 ('clf', BernoulliNB()),
 					])
+
+#Split the data into train and test
+#The test size is set to default sklearn of 25
+X_train, X_test, y_train, y_test = train_test_split(
+	reviews.data,reviews.target,test_size=0.25,random_state=0)
 
 #Get the score of the the current train and test
 #using Multinomial NB
