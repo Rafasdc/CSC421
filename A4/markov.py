@@ -11,7 +11,9 @@ def generate_random_health_injured_sequence(total_states=100):
 	unhealthy_matrix = [1,1,1,1,1,0,0,0,0,0]
 	random.shuffle(healthy_matrix)
 	random.shuffle(unhealthy_matrix)
-	for i in range(total_states):
+	#Always start healthy
+	sequence.append(state)
+	for i in range(total_states-1):
 		if state == 1:
 			state = np.random.choice(healthy_matrix)
 		elif state ==0:
@@ -20,7 +22,7 @@ def generate_random_health_injured_sequence(total_states=100):
 	return sequence
 
 def generate_random_move_sequence(total_states=100):
-	hidden = []
+	hidden = generate_random_health_injured_sequence(total_states)
 	sequence = []
 	state=1
 	healthy_matrix = [2,2,3,4,4,4,4,4,4,4]
@@ -28,20 +30,19 @@ def generate_random_move_sequence(total_states=100):
 	random.shuffle(healthy_matrix)
 	random.shuffle(unhealthy_matrix)
 	move = np.random.choice(healthy_matrix)
-	hidden.append(1)
 	sequence.append(move)
 	for i in range(total_states-1):
-		state = generate_random_health_injured_sequence(1)[0]
+		#skip first one as it has been already appended
+		state = hidden[i+1]
 		if state == 1:
 			move = np.random.choice(healthy_matrix)
 		elif state == 0:
 			move = np.random.choice(unhealthy_matrix)
-		hidden.append(state)
 		sequence.append(move)
 	return hidden,sequence
 
 seq_1 = generate_random_health_injured_sequence(300)
-#print(seq_1)
+print(seq_1)
 
 hidden, seq_2 = generate_random_move_sequence(300)
 print(hidden)
@@ -76,9 +77,9 @@ model.fit(([seq_1]))
 
 print(model.sample(300)[1])
 
-arr = np.array(model.sample(100)[1])
-print(arr)
+prediction = model.predict(np.array(seq_1).reshape(-1,1))
+print(prediction)
 
-print(model.predict(np.array(seq_1).reshape(-1,1)))
+print(np.sum(np.array(hidden) == prediction))
 
 #print(model.predict(X.reshape(-1,1),lengths))
