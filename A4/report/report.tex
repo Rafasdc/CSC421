@@ -1,0 +1,72 @@
+%% -*- mode: latex; mode: flyspell -*-
+\documentclass[12pt, letter]{article}
+
+%% Class name and Assignment number
+%%
+\newcommand{\courseName}{CSC421: Artificial Intelligence}
+\newcommand{\assignName}{Assignment~4}
+
+%% Packages
+\usepackage{amsmath,amsfonts,amssymb,amsthm,dsfont}
+\usepackage{physics}
+\usepackage{graphicx}
+\usepackage[bookmarks=false]{hyperref}
+\usepackage{color}
+\usepackage{lipsum}
+\usepackage{placeins}
+\usepackage{float}
+\restylefloat{table}
+
+%% Paper format
+\usepackage{geometry}
+\geometry{
+    letterpaper,
+    %% total={216mm,279mm}, %< NSERC size
+    margin=2.00cm,     %< default
+    %% margin=1.87cm,       %< NSERC tightest
+}
+
+%% Headers and footers
+\usepackage[explicit]{titlesec}
+\newpagestyle{titlesec_assignment}{
+  \sethead{\courseName}{}{\assignName}\setfoot{}{\thepage}{}
+  \headrule
+  %% \footrule
+}
+
+\begin{document}
+
+%% Set header and footer
+\pagestyle{titlesec_assignment}
+
+%% Title
+\title{\courseName\\\assignName}
+\author{Rafael Solorzano}
+\maketitle
+
+\section{Introduction}
+
+In this assignment logic programming using logpy as well as a standard python is performed for a family tree logic. Further. Hidden Markov Models in python using hmmlearn is performed, to examine different states of healthy or unhealthy as well as moves performed according to this hidden states. 
+
+\section{Logic Programming}
+
+\subsection{logpy}
+
+Logic programming to determine parents, grandparents and children of different Star Wars characters was performed using logpy. First, the parent relationship is created as facts in which we state ("Parent", "Children") the relationships created for this problem is shown in Figure 1. Once the relationships have been created we can query direct results from them, we query "Who is the parent of Luke Skywalker" as well as "Who are the children of Darth Vader" the code for this queries is shown in Figure 2. Finally, in order to query "Who is the grandparent of Kylo Ren?" we first create a an auxiliary grandparent function, and then we query using this new function, the code for this is shown in Figure 3. The results of all these functions is shown in Figure 4.
+
+\subsection{Standard Python}
+
+The same problem with the same queries is also performed using Standard Python. We use a dictionary of lists to establish the facts, this is created in the form "Parent" : ["Child 1" ... "Child n"]. Doing 
+
+\section{Learning}
+
+Learning and classification to go here
+
+\end{document}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
