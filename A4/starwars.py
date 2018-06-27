@@ -7,12 +7,17 @@ facts (parent, ( "Darth Vader","Luke Skywalker"),
 
 x=var()
 
+#Query ONE parent of Luke Skywalker
 print("The parent of Luke Skywalker is:")
 print(run(1,x,parent(x,"Luke Skywalker")))
 
+#Query TWO children of Darth Vader
+#If we do 1, only the last one is returned
 print("The children of Darth Vader are:")
 print(run(2,x,parent("Darth Vader",x)))
 
+#Help, function to return
+#grandparet of
 def grandparent(x,z):
 	y = var()
 	return conde((parent(x,y),parent(y,z)))
